@@ -1,26 +1,26 @@
 version: '3.4'
 services:
 
-  vpn:
-    container_name: vpn
-    image: dperson/openvpn-client:latest
-    cap_add:
-      - net_admin # required to modify network interfaces
-    restart: unless-stopped
-    volumes:
-      - /dev/net:/dev/net:z # tun device
-      - ${ROOT}/config/vpn:/vpn # OpenVPN configuration
-    security_opt:
-      - label:disable
-    ports:
-      - 8112:8112 # port for deluge web UI to be reachable from local network
-    command: '-f "" -r 192.168.1.0/24' # enable firewall and route local network traffic
+#  vpn:
+#    container_name: vpn
+#    image: dperson/openvpn-client:latest
+#    cap_add:
+#      - net_admin # required to modify network interfaces
+#    restart: unless-stopped
+#    volumes:
+#      - /dev/net:/dev/net:z # tun device
+#      - ${ROOT}/config/vpn:/vpn # OpenVPN configuration
+#    security_opt:
+#      - label:disable
+#    ports:
+#      - 8112:8112 # port for deluge web UI to be reachable from local network
+#    command: '-f "" -r 192.168.1.0/24' # enable firewall and route local network traffic
 
   deluge:
     container_name: deluge
-    image: linuxserver/deluge:latest
-    restart: unless-stopped
-    network_mode: service:vpn # run on the vpn network
+    image: linuxserver/deluge:amd64-latest
+    restart: always
+    network_mode: host # service:vpn 
     environment:
       - PUID=${PUID} # default user id, defined in .env 
       - PGID=${PGID} # default group id, defined in .env
@@ -31,7 +31,7 @@ services:
 
   jackett:
     container_name: jackett
-    image: linuxserver/jackett:latest
+    image: linuxserver/jackett:amd64-latest
     restart: unless-stopped
     network_mode: host
     environment:
@@ -45,7 +45,7 @@ services:
 
   nzbget:
     container_name: nzbget
-    image: linuxserver/nzbget:latest
+    image: linuxserver/nzbget:amd64-latest
     restart: unless-stopped
     network_mode: host
     environment:
@@ -58,7 +58,7 @@ services:
 
   sonarr:
     container_name: sonarr
-    image: linuxserver/sonarr:latest
+    image: linuxserver/sonarr:amd64-latest
     restart: unless-stopped
     network_mode: host
     environment:
@@ -73,7 +73,7 @@ services:
 
   radarr:
     container_name: radarr
-    image: linuxserver/radarr:latest
+    image: linuxserver/radarr:amd64-latest
     restart: unless-stopped
     network_mode: host
     environment:
